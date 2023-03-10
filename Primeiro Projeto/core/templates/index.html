@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>1 - Index</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}"> <!--Outra tag do DJANGO-->
+    <script src="{% static 'js/script.js' %}"></script>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h1>Esse é o Index da aplicação</h1>
+        <img src="{% static 'images/django-logo.png' %}">
+        <h2>{{curso}}</h2> <!--As variáveis tem que estar dentro de duas chaves-->
+        <p>{{outro}}</p>
+    
+        <table style="margin: auto;">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <!--Tudo que tiver essa tag ai em baixo é uma tag específica do framework DJANGO-->
+            <tbody>
+                {%for item in produtos %} 
+                    <tr>
+                        <td><a href="{% url 'produto' item.id %}">{{item.nome}}</a></td> <!--A tag do DJANGO url como o nome ja diz vai executar a url que eu passei(nesse caso com o nome produto) que eu passei e com o argumento que passei tb-->
+                        <td>{{item.preco}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <button onclick="teste()">Clique-me</button>
+    </div>
+    
+</body>
+</html>
