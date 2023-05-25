@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apl.urls')),#Para qualquer rota que nao seja admin ele vai importar as rotas da aplicação apl
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) #Isso serve para que possamos fazer uso dos arquivos dentro da pasta media nos templates
