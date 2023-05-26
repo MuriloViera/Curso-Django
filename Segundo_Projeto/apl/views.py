@@ -1,33 +1,45 @@
 from django.shortcuts import render
 from .forms import ContatoForm, ProdutoModelForm
 from django.contrib import messages
+from .models import Produto #Importanto a tabela de dados
+from django.shortcuts import redirect
 
 # Create your views here.
 
 def index(request):
-    return render(request, 'index.html')
+    context = {
+        'produtos': Produto.objects.all() #Basta isso pra eu passar todos objetos existentes na tabela produto
+    }
+    return render(request, 'index.html', context)
 
 
 def produto(request):
-    if str(request.method) == 'POST': #Se o request estiver vindo como post, ou seja, ta vindo com dados
-        form = ProdutoModelForm(request.POST, request.FILES) #Aqui to passando os dados que tao chegando eles para a variavel 'form'
-        if form.is_valid():
-            #prod = form.save(commit=False) #Pegar os dados do form, poderia ter feito usando o cleaned_data direito tambem
 
-            form.save()#So isso ja salva o form e manda pro model, que manda pro banco
+    if str(request.user) != 'AnonymousUser': 
 
-            messages.success(request, 'Produto salvo com sucesso')
+        if str(request.method) == 'POST': #Se o request estiver vindo como post, ou seja, ta vindo com dados
+            form = ProdutoModelForm(request.POST, request.FILES) #Aqui to passando os dados que tao chegando eles para a variavel 'form'
+            if form.is_valid():
+                #prod = form.save(commit=False) #Pegar os dados do form, poderia ter feito usando o cleaned_data direito tambem
+
+                form.save()#So isso ja salva o form e manda pro model, que manda pro banco
+
+                messages.success(request, 'Produto salvo com sucesso')
+                form = ProdutoModelForm()
+            else:
+                messages.error(request,'Erro ao salvar o produto')    
+        else: #Se nao tiver vindo como post ta vindo como get, ou seja ele ta abrindo a pagina sem mandar nada, ai eu insiro um form seco
             form = ProdutoModelForm()
-        else:
-            messages.error(request,'Erro ao salvar o produto')    
-    else: #Se nao tiver vindo como post ta vindo como get, ou seja ele ta abrindo a pagina sem mandar nada, ai eu insiro um form seco
-        form = ProdutoModelForm()
 
-    context = {
-        'formProduto' : form 
-    }            
-    return render(request, 'produtos.html', context)
 
+        context = {
+            'formProduto' : form 
+        }
+
+        return render(request, 'produtos.html', context)
+    
+    else: 
+        return redirect('index')
 
 
 def contato(request):
